@@ -1,0 +1,35 @@
+h1 { 
+    color: red;
+}
+
+body {
+    background-color: aqua;
+}
+
+#red {
+    color: red;
+}
+
+#orange {
+    color: orange;
+}
+
+#yellow {
+    color: yellow;
+}
+
+#green {
+    color: green;
+}
+
+#purple {
+    color: purple;
+}
+
+#aqua {
+    color: aquamarine;
+}
+
+input {
+   background-color: purple;
+}
