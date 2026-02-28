@@ -2,25 +2,28 @@ import React from "react";
 import AppHeader from "./AppHeader.jsx";
 import SearshPanel from "./SearchPanel.jsx";
 import TodoList from "./TodoList.jsx";
+import ItemsFilter from "./ItemsFilters.jsx";
 
 const App = () => {
   const todoData = [
-    { label: 'Wake'},
-    { label: 'Здрасьте', important: true},
-    { label: 'Сялям'},
-    { label: 'GG'},
-    { label: 'Пошли хавать'},
-     { label: 'Испугался?'}
+    { id: 1,label: 'Wake'},
+    { id: 2,label: 'Здрасьте', important: true},
+    { id: 3,label: 'Сялям'},
+    { id: 4,label: 'GG'},
+    { id: 5,label: 'Пошли хавать'},
+    { id: 6,label: 'Испугался?'}
   ]
-  const isLogged = false;
-  const login = <span>Login please</span>;
-  const welcome = <span>Welcome, user</span>;
-
   return (
-    <div>
-      {isLogged ? welcome :login}
-        <span> {(new Date()).toString()}</span>
-        <AppHeader/>
+    <div className="container">
+        <AppHeader active = {3} done = {4}/>
+        <div className="row">
+            <div className="col-6">
+                <SearshPanel/>
+            </div>
+            <div className="col-6">
+                <ItemsFilter/>
+            </div>
+        </div>
         <SearshPanel/>
         <TodoList todos = {todoData}/>
     </div>
