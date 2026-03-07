@@ -42,3 +42,16 @@ input {
     margin-top: 1rem;
     margin-bottom: 1rem;
 }
+
+.done {
+    text-decoration: line-through;
+}
+
+.item-list-item {
+    font-size: 1.5rem;
+}
+
+.important {
+    color: red;
+    font-weight: bold;
+}
