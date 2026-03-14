@@ -55,3 +55,7 @@ input {
     color: red;
     font-weight: bold;
 }
+
+.item-add-form {
+    margin-top: 1rem;
+}
