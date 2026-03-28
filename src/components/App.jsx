@@ -1,63 +1,58 @@
-import React from "react";
+import { useEffect, useState } from 'react';
 import AppHeader from "./AppHeader.jsx";
 import SearshPanel from "./SearchPanel.jsx";
 import TodoList from "./TodoList.jsx";
 import ItemsFilter from "./ItemsFilters.jsx";
 import AddItem from "./AddItem.jsx";
 
-let maxId = 100;
+const App = () => {
 
-class App extends React.Component {
-
-  constructor(props) {
-      super(props);
-
+  const [todoData, setTodoData] = useState(() => {
       const savedTodos = localStorage.getItem('todoData');
+  
+      return savedTodos
+          ? JSON.parse(savedTodos)
+          : [
+              {id: 1, label: 'Wake', important: false, done: false },
+              {id: 2, label: 'Здрасьте', important: false, done: false },
+              {id: 3, label: 'Сялям', important: false, done: false },
+              {id: 4, label: 'GG', important: false, done: false },
+              {id: 5, label: 'Пошли хавать', important: false, done: false },
+              {id: 6, label: 'Испугался?', important: false, done: false }
+          ];
+  });
 
-      this.state = {
-        todoData: savedTodos ? JSON.parse(savedTodos) :
-        [
-          {id: 1, label: 'Wake'},
-          {id: 2, label: 'Здрасьте', important: true },
-          {id: 3, label: 'Сялям'},
-          {id: 4, label: 'GG'},
-          {id: 5, label: 'Пошли хавать'},
-          {id: 6, label: 'Испугался?'},
-        ],
-        term: '', //срок
-        filter: 'all'
-      };
-  }
+    const [term, setTerm] = useState('');
+    const [filter, setFilter] = useState('all');
+  
 
-  // Функционал сохранения
-  componentDidUpdate(prevProps, prevState) {
-      if(prevState.todoData !== this.state.todoData) {
-          localStorage.setItem('todoData', JSON.stringify(this.state.todoData));
-      }
-  }
+  // Сщхранение в localStorage
+  useEffect(() => {
+    localStorage.setItem('todoData', JSON.stringify(todoData));
+  }, [todoData]);
 
   // поиск
-  onSearchChange = (term) => {
-      this.setState({term});
-  }
+  const onSearchChange = (term) => {
+    setTerm(term);
+  };
 
   //фильтр
-  onFilterChange = (filter) => {
-      this.setState({filter});
-  }
+  const onFilterChange = (filter) => {
+      setFilter(filter);
+  };
   
-  searchItem(items, term) {
-    if(term.length === 0) {
+  const searchItem = (items, term) => {
+    if (term.length === 0) {
       return items;
     }
 
-    return items.filter((item) => {
-      return item.label.toLowerCase().includes(term.toLowerCase());
-    })
-  }
+    return items.filter((item) => 
+      item.label.toLowerCase().includes(term.toLowerCase())
+    );
+  };
 
-  filterItem(items, filter) {
-    switch(filter) {
+  const filterItem = (items, filter) => {
+    switch (filter) {
        case 'active':
         return items.filter((item) => !item.done);
       case 'done':
@@ -65,95 +60,94 @@ class App extends React.Component {
       default:
         return items;
     }
-  }
+  };
 
-  toggleDone = (id) => {
-    this.setState(({todoData}) => {
+  const toggleDone = (id) => {
+    setTodoData((todoData) => {
       const index = todoData.findIndex((item) => item.id === id);
       const oldItem = todoData[index];
+      
       const newItem = {
         ...oldItem,
         done: !oldItem.done
       };
 
-      return {
-        todoData: [
+      return [
           ...todoData.slice(0, index),
           newItem,
           ...todoData.slice(index + 1)
-        ]
-      };
+        ];
     });
   };
 
-  state = {
-    todoData : [
-      {id: 1, label: 'Wake'},
-      {id: 2, label: 'Здрасьте', important: true },
-      {id: 3, label: 'Сялям'},
-      {id: 4, label: 'GG'},
-      {id: 5, label: 'Пошли хавать'},
-      {id: 6, label: 'Испугался?'}
-    ]
-  };
+  const toggleImportant = (id) => {
+    setTodoData((todoData) => {
+      const index = todoData.findIndex((item) => item.id === id);
+      const oldItem = todoData[index];
+      
+      const newItem = {
+        ...oldItem,
+        important: !oldItem.important
+      };
 
- deleteItem = (id) => {
-  this.setState(
-    ({todoData}) => 
-    {
-      const index = todoData.findIndex((num) => num.id === id)
-      const before = todoData.slice(0, index)
-      const after = todoData.slice(index + 1)
-      const newMassive = [...before, ...after]
-      return {
-        todoData : newMassive
-      }
-    }
-  );
- }
-
- addItem = (text) => {
-  const newItem = {
-    label: text,
-    important: false,
-    id: maxId++
-  };
-
-  this.setState(
-    ({todoData}) => {
-      const newMassive = [
-        ...todoData,
-        newItem
+      return [
+        ...todoData.slice(0, index),
+        newItem,
+        ...todoData.slice(index + 1)
       ];
-      return {
-        todoData: newMassive
-      }
-    }
-  )
- }
+    });
+  };
 
-  render() {
-    const { todoData, term, filter } = this.state;
-    const visibleItems = this.filterItem(this.searchItem(todoData, term), filter);
+ const deleteItem = (id) => {
+  setTodoData((todoData) => {
+    return todoData.filter((item) => item.id !== id);
+  });
+ };
+
+ const addItem = (text) => {
+  if (!text.trim()) return;
+
+  setTodoData((todoData) => {
+    const maxId = todoData.length > 0
+        ? Math.max(...todoData.map((item) => item.id))
+        : 0;
+
+      const newItem = {
+        id: maxId + 1,
+        label: text,
+        important: false,
+        done: false
+      };
+
+      return [...todoData, newItem];
+  });
+ };
+
+  
+    const visibleItems = filterItem(searchItem(todoData, term), filter);
     const doneCount = todoData.filter((item) => item.done).length;
     const todoCount = todoData.length - doneCount;
 
     return (
       <div className="container">
           <AppHeader active = {todoCount} done = {doneCount}/>
-          <div className="row">
-              <div className="col-6">
-                  <SearshPanel onSearchChange = {this.onSearchChange}/>
-              </div>
-              <div className="col-6">
-                  <ItemsFilter filter={filter} onFilterChange = {this.onFilterChange}/>
-              </div>
-          </div>
-          <TodoList todos = {visibleItems} onDeleted = {this.deleteItem} onToggleDone = {this.toggleDone}/>
-          <AddItem onAddItem = {this.addItem}/>
+          
+          <SearshPanel onSearchChange = {onSearchChange}/>
+              
+          <ItemsFilter filter={filter} onFilterChange = {onFilterChange}/>
+          
+          <TodoList 
+          todos={visibleItems} 
+          onDeleted={deleteItem} 
+          onToggleDone={toggleDone}
+          onToggleImportant={toggleImportant}
+          />
+
+
+          <AddItem onAddItem = {addItem}/>
       </div>
     );
-  }
+  
 }
 
 export default App;

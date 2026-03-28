@@ -9,7 +9,7 @@ const AppHeader = ({done, active}) => {
             <h1>My todo list</h1>
         </div>
         <div className="col-6 text-secondary">
-            <h3>{done} активно, {active} сделано</h3>
+            <h3>{active} активно, {done} сделано</h3>
         </div>
       </div>
     </div>

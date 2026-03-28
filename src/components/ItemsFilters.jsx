@@ -2,10 +2,10 @@ import React from "react"
 
 class ItemsFilter extends React.Component {
     render() {
-        const { filter, onFilterChange } = this.props;
+        const { onFilterChange } = this.props;
 
         return (
-            <div className="btn-group" role="group">
+            <div className="btn-group" role="group" id="filter">
                 <input type="radio" className="btn-check" name="btnradio" id="btnradio1" onClick={() => onFilterChange('all')}/>
                 <label className="btn btn-outline-info" htmlFor="btnradio1">Все</label>
 

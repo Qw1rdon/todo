@@ -1,62 +1,41 @@
-import React from "react";
+const TodoListItem = ({ label, onDeleted, onToggleDone, onToggleImportant, done, important }) => {
+    let classNames = 'label-text item-list-base';
 
-class TodoListItem extends React.Component {
-
-    state = {
-        done: false,
-        important: false
+    if(done) {
+        classNames += ' done';
     }
-   
-    onLabelClick() {
-        console.log(`Нажато: ${this.props.label}`)
-        this.setState(
-            ({done}) => 
-            {
-                return {
-                    done: !done
-                }
-            }
-        );
-   };
-   
-        onMarkImportant = () => {
-            this.setState(
-                ({important}) => 
-                {
-                    return {
-                        important: !important
-                    }
-                }
-            );
-        };
-   
-    render() {
 
-        const {label, onDeleted} = this.props
+    if(important) {
+        classNames += ' important';
+    }
 
-        const {done, important} = this.state
-        let className = 'item-list-base';
-        if (done) { //значит истинно
-            className += ' done';
-        }
 
-        if(important) {
-            className += ' important';
-        }
-
-        return <div>
-            <span 
-            onClick={this.onLabelClick.bind(this)}
-            className={className}>
-            {label}
-        </span>
-            <button type="button" onClick={this.onMarkImportant} className="btn btn-outline-primary my-button mx-1"><i className="fa-solid fa-bookmark"></i></button>
-            <button type="button" className="btn btn-outline-success my-button mx-1"><i className="fa-solid fa-check"></i>
-            </button>
-            <button type="button" className="btn btn-outline-danger my-button mx-1" onClick={onDeleted}><i className="fa-solid fa-trash-can"></i>
-            </button>
+    return  (
+        <div className="row">
+            <div className="col-5">
+                <span onClick={onToggleDone} className={classNames}>
+                    {label}
+                </span>
+            </div>
+            <div className="col-7">
+                {done ? (
+                    <button type="button" onClick={onToggleDone} className="btn btn-outline-warning my-button mx-1">
+                        <i className="fa-solid fa-arrow-left"></i>
+                    </button>
+                ) : (
+                    <button type="button" onClick={onToggleDone} className="btn btn-outline-success my-button mx-1">
+                        <i className="fa-solid fa-check"></i>
+                    </button>
+                )}
+                <button type="button" onClick={onToggleImportant} className="btn btn-outline-primary my-button mx-1">
+                    <i className="fa-solid fa-bookmark"></i>
+                </button>
+                <button type="button" className="btn btn-outline-danger my-button mx-1" onClick={onDeleted}>
+                    <i className="fa-solid fa-trash-can"></i>
+                </button>
+            </div>
         </div> 
-    }
+    )
 
 }
 
